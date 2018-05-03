@@ -1,0 +1,26 @@
+{
+  "name": "timesheet-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/louisevdb84/timesheet-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/louisevdb84/timesheet-api/issues"
+  },
+  "homepage": "https://github.com/louisevdb84/timesheet-api#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.17",
+    "nodemon": "^1.17.3"
+  }
+}
