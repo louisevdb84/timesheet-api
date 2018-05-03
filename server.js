@@ -3,7 +3,7 @@ var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose")
 
-var url = "mongodb://louise:timesheet@ds111410.mlab.com:11410/timesheet";
+var url = process.env.TimesheetDbDatabaseURL;
 mongoose.connect(url);
 
 app.get("/", function(req, res){
