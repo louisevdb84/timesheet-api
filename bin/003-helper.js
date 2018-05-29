@@ -1,32 +1,27 @@
-var mongoose = require("mongoose");
+// var mongoose = require("mongoose");
 
-var data = [];
-var model = {};
+// function create(d, m) {
+//     m.remove({}, (err, info)=> cb(err, info, d, m))
+// }
 
-function create(d, m) {    
-    data = d;
-    model = m;
-    model.remove({}, cb)
-}
+// function cb(err, info, d, m) {
+//     if (err) {
+//         console.log(err);
+//     }
+//     console.log("removed");
+//     console.log(d);
 
-function cb(err) {
-    if (err) {
-        console.log(err);
-    }
-    console.log("removed");
-    console.log(data);
+//     d.forEach(item => {
+//         m.create(item, (err, object) => {
+//             if (err) {
+//                 console.log(err)
+//             } else {
+//                 console.log("Added" + object);
+//             }
+//         });
+//     });
+// }
 
-    data.forEach(item => {
-        model.create(item, (err, object) => {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log("Added"+ object);
-            }
-        })
-    })
-}
-
-module.exports = {
-    create
-}
+// module.exports = {
+//     create
+// }
