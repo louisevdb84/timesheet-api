@@ -1,25 +1,24 @@
-// var mongoose = require("mongoose");
-// var helper = require("./003-helper");
-// const async = require('async');
+var helper = require("./003-helper");
+var users = require("./users");
+var categories = require("./categories");
+var tasks = require("./tasks");
+var projects = require("./projects");
+var timesheetEntries = require("./timesheetEntries");
+Promise = require('bluebird');
 
-// var userData = require("./users");
-// var userModel = require("../models/user");
-// var taskData = require("./tasks");
-// var taskModel = require("../models/task");
+const db = require('knex')({
+    client: 'pg',
+    connection: {
+        host: '127.0.0.1',
+        user: 'postgres',
+        password: 'postgres_007',
+        database: 'Timesheet'
+    }
+});
 
-// var url = process.env.TimesheetDbDatabaseURL;
-// mongoose.connect(url);
-
-// async.parallel({
-//     user: async.apply(helper.create, userData, userModel),
-//     task: async.apply(helper.create,taskData, taskModel)
-// }, function (err, results) {
-//     if (err){
-//         console.log(err);
-//         throw err;
-//     }
-//     if (!results) {
-//         console.log("no results on import.")
-//     }
-//     console.log('import finished');
-// })
+helper.createData(db, users, 'users')
+    .then(helper.createData(db, categories, 'categories'))
+    .then(helper.createData(db, projects, 'projects'))
+    .then(helper.createData(db, tasks, 'tasks'))
+    .then(helper.createData(db, timesheetEntries, 'timesheetentries'))
+    //.then(process.exit())

@@ -1,12 +1,18 @@
 var users = [
+    {        
+        name: "Louise",
+        surname: "van den Berg",
+        hourlyRate: "108",
+        username: "louisevdb",
+        password: "123"
+    },            
     {
-        username: "Odo",
-        password: "0"
+        name: "Herman",
+        surname: "van den Berg",
+        hourlyRate: "271",
+        username: "hermanvdb",
+        password: "123"
     },
-    {
-        username: "Neelix",
-        password: "0"
-    }
-]
+];
 
 module.exports = users;
