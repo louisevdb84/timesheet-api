@@ -1,19 +1,21 @@
 var Promise = require('bluebird');
 
-var func = async function(db, data, tblName) {
-    db.transaction(trx=> {
+var createData = function(db, data, tblName) {
+    return db.transaction(trx=> {
         db(tblName).del()            
             .transacting(trx)
             .then(ids => {
             return Promise.map(data, d => {
-                return db.insert(d).into(tblName).transacting(trx);
+                return db.insert(d)
+                    .returning('*').into(tblName).transacting(trx);
             });
             })
             .then(trx.commit)
             .catch(trx.rollback);
         })
         .then(inserts=> {
-        console.log(inserts.length + ' new ' + tblName + ' saved.');
+            console.log(inserts.length + ' new ' + tblName + ' saved.');
+            console.log(inserts);
         })
         .catch(error=> {
         console.error(error);
@@ -21,40 +23,50 @@ var func = async function(db, data, tblName) {
     
 }
 
-var createData = async function (db, data, tblName) {
-    return new Promise((res, rej) => {
-        console.log("add data")
-        //let r1 = await func(db, data, tblName)
-        let r1 = func(db, data, tblName)
-        
-    })
-    
-}
-
 var dropTables = (db) => {
-    db.schema.dropTable('tasks').then(res => console.log(res)).catch(err => console.log(err));
-    db.schema.dropTable('categories').then(res => console.log(res)).catch(err => console.log(err));
-    db.schema.dropTable('users').then(res => console.log(res)).catch(err => console.log(err));
-    db.schema.dropTable('projects').then(res => console.log(res)).catch(err => console.log(err));
-    db.schema.dropTable('timesheetEntries').then(res => console.log(res)).catch(err => console.log(err));
+    db.schema.dropTable('tasks')
+        .then(res => {
+            console.log("tasks")
+            db.schema.dropTable('categories')
+                .then(res => {
+                    console.log("categories")
+                    db.schema.dropTable('users')
+                        .then(res => {
+                            console.log("users")
+                            db.schema.dropTable('projects')                                
+                                .then(res => {
+                                    console.log("projects")
+                                    db.schema.dropTable('timesheetentries')
+                                    .then(res => console.log("timesheetentries"))
+                                })
+                        })
+                })
+        })
 }
 
 var createTables = (db) => {
-    db.schema.createTable('users', table => {
-        table.increments();
-        table.string('name');        
-        table.string('surname');    
-        table.decimal('hourlyRate'),
-        table.string('username').unique().notNullable(),
-        table.string('password').notNullable()             
-    }).then(res => console.log)
+    var userPromise = new Promise((resolve, reject) => {
+        db.schema.createTable('users', table => {
+            table.increments();
+            table.string('name');
+            table.string('surname');
+            table.decimal('hourlyRate'),
+                table.string('username').unique().notNullable(),
+                table.string('password').notNullable()
+        }).then(res => {
+            console.log("User created");
+            resolve();
+        });
+    });
 
-    db.schema.createTable('categories', table => {
-        table.increments();
-        table.integer('userId')//.references('id').inTable('users')
-        table.string('name')    
-        table.bool('isActive')
-    }).then(res => console.log)
+    userPromise.then(() => {
+        db.schema.createTable('categories', table => {
+            table.increments();
+            table.integer('userId').references('id').inTable('users');
+            table.string('name');
+            table.bool('isActive');
+        }).then(res => console.log("categories created"));
+    })
 
     db.schema.createTable('tasks', table => {
         table.increments();
@@ -64,22 +76,21 @@ var createTables = (db) => {
         table.string('name')    
         table.integer('repeat')   
         table.bool('isActive')
-    }).then(res => console.log)
+    }).then(res => console.log("tasks created"))
 
     db.schema.createTable('projects', table => {
         table.increments();        
         table.string('name')            
-    }).then(res => console.log)
+    }).then(res => console.log("projects created"))
 
     
     db.schema.createTable('timesheetentries', table => {
-        table.increments();
-        table.integer('userId')//.references('id').inTable('users')
+        table.increments();        
         table.integer('taskId')//.references('id').inTable('users')        
         table.string('description')    
         table.dateTime('start')   
         table.dateTime('end')
-    }).then(res => console.log)
+    }).then(res => console.log("Timesheet Entries created"))
 }
 
 module.exports = {    

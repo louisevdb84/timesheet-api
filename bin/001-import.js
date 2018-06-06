@@ -4,7 +4,6 @@ var categories = require("./categories");
 var tasks = require("./tasks");
 var projects = require("./projects");
 var timesheetEntries = require("./timesheetEntries");
-Promise = require('bluebird');
 
 const db = require('knex')({
     client: 'pg',
@@ -16,9 +15,16 @@ const db = require('knex')({
     }
 });
 
-helper.createData(db, users, 'users')
-    .then(helper.createData(db, categories, 'categories'))
-    .then(helper.createData(db, projects, 'projects'))
-    .then(helper.createData(db, tasks, 'tasks'))
-    .then(helper.createData(db, timesheetEntries, 'timesheetentries'))
-    //.then(process.exit())
+var createDataConfig = [
+    { data: users, tblName: 'users' },
+    { data: categories, tblName: 'categories' },
+    { data: projects, tblName: 'projects' },
+    { data: tasks, tblName: 'tasks' },
+    { data: timesheetEntries, tblName: 'timesheetentries' }
+];
+
+var creationPromise = Promise.resolve();
+createDataConfig.forEach(dataConfig => {
+    creationPromise = creationPromise.then(() => helper.createData(db, dataConfig.data, dataConfig.tblName));
+});
+creationPromise.then(() => process.exit());

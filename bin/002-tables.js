@@ -11,8 +11,12 @@ const db = require('knex')({
         database: 'Timesheet'
     }
 });
-helper.dropTables(db);
-helper.createTables(db);
+helper.dropTables(db)
+setTimeout(() => {
+    helper.createTables(db);
+}, 5000);
+setTimeout(() => {
+    process.exit();
+}, 8000);
 
-//process.exit();
 
